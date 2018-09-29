@@ -2,6 +2,6 @@ package gdcn.igorlo.Constants;
 
 public class Booleans {
 
-    public static Boolean DEBUG = true;
+    public static final Boolean DEBUG = false;
 
 }

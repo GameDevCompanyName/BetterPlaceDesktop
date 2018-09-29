@@ -1,5 +1,6 @@
 package gdcn.igorlo.Utilities;
 
+import gdcn.igorlo.Constants.Strings;
 import javafx.scene.image.Image;
 import org.json.simple.JSONArray;
 
@@ -14,4 +15,8 @@ public class Utils {
         return string.split(",");
     }
 
+    public static String getRandomJojiLine() {
+        int index = new Random().nextInt(Strings.JOJI_LINES.length);
+        return Strings.JOJI_LINES[index];
+    }
 }

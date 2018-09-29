@@ -132,7 +132,7 @@ public class Connector {
     }
 
     public static void displayServerMessage(String message) {
-        chat.userMessage("SERVER", message, "#FF0000");
+        chat.serverMessage(message);
     }
 
     public static void userConnectedRecieved(String login) {
@@ -149,7 +149,8 @@ public class Connector {
 
     public static void connectionLost() {
         connected = false;
-        chat.systemMsg("Соединение потеряно");
+        chat.systemMsg("Соединение разорвано");
+        dropAllTheConnection();
     }
 
     public static void exit() {

@@ -13,17 +13,21 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Message extends VBox {
 
-    public static Pane parent;
+    private static Pane parent;
 
-    public static Font commonFont;
-    public static Font nameFont;
+    private static Font commonFont;
+    private static Font boldFont;
+    private static Font nameFont;
 
-    public TextFlow msg = new TextFlow();
+    private TextFlow msg = new TextFlow();
 
     private String senderName;
     private String senderColor;
@@ -31,9 +35,7 @@ public class Message extends VBox {
 
     private Color nameColor;
 
-    public Message(String senderName, String senderColor, String text){
-
-        loadFonts();
+    Message(String senderName, String senderColor, String text){
 
         this.type = MessageType.COMMON_MESSAGE;
         this.senderColor = senderColor;
@@ -54,18 +56,22 @@ public class Message extends VBox {
     }
 
     public static void loadFonts(){
-        //commonFont = new Font("Courier New", 12);
-//            commonFont = Font.loadFont(new FileInputStream(new File("resources/commonFont.ttf")), 16);
-//        try {
-//            nameFont = Font.loadFont(new FileInputStream(new File("resources/commonFont.ttf")), 20);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//            serverNameFont = Font.loadFont(new FileInputStream(new File("resources/nameFont.ttf")), 16);
-//            serverTextFont = Font.loadFont(new FileInputStream(new File("resources/nameFont.ttf")), 13);
-        commonFont = new Font("Courier New", 14);
-        nameFont = new Font("Courier New Bold", 14);
 
+        try {
+            commonFont = Font.loadFont(new FileInputStream(new File("Resources/Fonts/UbuntuMono-R.ttf")), 14);
+            boldFont = Font.loadFont(new FileInputStream(new File("Resources/Fonts/UbuntuMono-B.ttf")), 14);
+            nameFont = boldFont;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+//        commonFont = new Font("Courier New", 14);
+//        nameFont = new Font("Courier New Bold", 14);
+
+    }
+
+    public static Font getCommonFont() {
+        return commonFont;
     }
 
     private List<Text> buildText(String text){
@@ -115,7 +121,7 @@ public class Message extends VBox {
 
     public void build(String text){
 
-        Text nickname = new Text(senderName + ":");
+        Text nickname = new Text(senderName + ": ");
         nickname.setFont(nameFont);
         nickname.setFill(nameColor);
         DropShadow dropShadow = new DropShadow();

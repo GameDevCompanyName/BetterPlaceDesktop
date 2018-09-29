@@ -7,6 +7,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextArea;
+import javafx.scene.effect.Glow;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -21,8 +22,6 @@ public class ChillTextPane extends StackPane {
 
     public ChillTextPane(Pane pane, Chat chat){
 
-
-        Font font = new Font("Courier New", 14);
         this.setAlignment(Pos.BOTTOM_LEFT);
         this.prefWidthProperty().bind(pane.widthProperty());
         this.maxWidthProperty().bind(pane.widthProperty());
@@ -32,7 +31,12 @@ public class ChillTextPane extends StackPane {
             textArea.setStyle("-fx-border-color: red");
             this.setStyle("-fx-border-color: GREEN");
         }
-        textArea.setFont(font);
+        textArea.setStyle("-fx-background-color: rgba(53,89,119,0.2);" +
+                "-fx-text-fill: Lavender;");
+        textArea.setFont(Message.getCommonFont());
+
+        Glow glow = new Glow(0.6);
+        textArea.setEffect(glow);
 
         this.getChildren().addAll(textArea);
         //this.getChildren().addAll(textArea);

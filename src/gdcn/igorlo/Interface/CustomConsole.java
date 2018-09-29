@@ -25,6 +25,7 @@ public class CustomConsole extends StackPane {
         scrollPane = new ScrollPane();
 
         Message.setParentNode(textBox);
+        Message.loadFonts();
 
 //        textBox.setPadding(new Insets(5));
 //        textBox.setSpacing(5);

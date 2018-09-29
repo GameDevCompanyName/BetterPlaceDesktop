@@ -41,7 +41,6 @@ public class Handler extends SimpleChannelHandler {
         Platform.runLater(() -> {
             Connector.connectionLost();
         });
-
     }
 
     @Override
