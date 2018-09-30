@@ -1,12 +1,9 @@
 package gdcn.igorlo;
 
-import gdcn.igorlo.Constants.*;
+import gdcn.igorlo.Constants.Strings;
 import gdcn.igorlo.Interface.Chat;
-import gdcn.igorlo.Interface.Message;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
