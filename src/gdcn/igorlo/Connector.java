@@ -165,4 +165,30 @@ public class Connector {
     public static void connectionSuccess() {
         connected = true;
     }
+
+    public static void sendServerCommand(String text) {
+        send(ClientMessage.commandSend(text));
+    }
+
+    public static void createConnectionIfNONE(String ip, Integer port) {
+        factory = new NioClientSocketChannelFactory(
+                Executors.newFixedThreadPool(1),
+                Executors.newFixedThreadPool(4)
+        );
+        bootstrap = new ClientBootstrap(factory);
+        bootstrap.setPipelineFactory(() -> Channels.pipeline(new Handler()));
+
+        if (channel == null && !connected){
+            ChannelFuture future = bootstrap.connect(new InetSocketAddress(ip, port));
+            try {
+                channel = future.await().getChannel();
+                connected = true;
+            } catch (InterruptedException e) {
+                if (Booleans.DEBUG)
+                    System.out.println("Не удалось создать подключение");
+                chat.systemMsg("Не удалось создать подключение");
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -1,16 +1,15 @@
 package gdcn.igorlo.Interface;
 
 import gdcn.igorlo.Constants.Booleans;
+import gdcn.igorlo.Constants.Colors;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -81,7 +80,7 @@ public class CustomConsole extends StackPane {
     }
 
     public void systemMsg(String text) {
-        userTextAppend("SYSTEM", text, "#CC2222");
+        userTextAppend("SYSTEM", text, Colors.SYSTEM_MSG_NAME);
     }
 
 }

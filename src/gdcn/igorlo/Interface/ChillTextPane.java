@@ -1,19 +1,10 @@
 package gdcn.igorlo.Interface;
 
 import gdcn.igorlo.Constants.Booleans;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.geometry.Pos;
-import javafx.scene.control.TextArea;
 import javafx.scene.effect.Glow;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.util.Duration;
 
 
 public class ChillTextPane extends StackPane {
@@ -45,6 +36,10 @@ public class ChillTextPane extends StackPane {
 
     public String getText() {
         return textArea.getText();
+    }
+
+    public MyTextArea getTextArea(){
+        return textArea;
     }
 
     public void clear() {

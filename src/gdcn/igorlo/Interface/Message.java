@@ -2,10 +2,10 @@ package gdcn.igorlo.Interface;
 
 import gdcn.igorlo.Connector;
 import gdcn.igorlo.Constants.Booleans;
+import gdcn.igorlo.Constants.Colors;
 import gdcn.igorlo.Constants.Times;
-import javafx.geometry.Insets;
 import javafx.scene.control.Control;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -26,6 +26,7 @@ public class Message extends VBox {
     private static Font commonFont;
     private static Font boldFont;
     private static Font nameFont;
+    private static String textColor;
 
     private TextFlow msg = new TextFlow();
 
@@ -74,6 +75,14 @@ public class Message extends VBox {
         return commonFont;
     }
 
+    public static void changeMsgTextColor(String colorHex) {
+        setTextColor(colorHex);
+    }
+
+    public static void setTextColor(String color) {
+        textColor = color;
+    }
+
     private List<Text> buildText(String text){
 
         Font font = commonFont;
@@ -85,6 +94,18 @@ public class Message extends VBox {
         for (int i = 0; i < parsedText.length; i++){
             String word = parsedText[i];
             if (word.contains("www.") || word.contains("https://") || word.contains("http://")){
+
+                if (buffer.length() != 0){
+                    Text bufferedText = new Text();
+                    if (type == MessageType.COMMON_MESSAGE)
+                        bufferedText.setStyle("-fx-fill: " + Colors.DEFAULT_MSG_TEXT + ";");
+                    if (type == MessageType.SERVER_MESSAGE)
+                        bufferedText.setStyle("-fx-fill: " + Colors.DEFAULT_MSG_TEXT + ";");
+                    bufferedText.setText(buffer.toString());
+                    bufferedText.setFont(font);
+                    texts.add(bufferedText);
+                    buffer = new StringBuilder();
+                }
 
                 Hyperlink link = new Hyperlink(word, Connector.application);
                 link.setFont(font);
@@ -101,9 +122,9 @@ public class Message extends VBox {
         if (buffer.length() != 0){
             Text bufferedText = new Text();
             if (type == MessageType.COMMON_MESSAGE)
-                bufferedText.setStyle("-fx-fill: White;");
+                bufferedText.setStyle("-fx-fill: " + Colors.DEFAULT_MSG_TEXT + ";");
             if (type == MessageType.SERVER_MESSAGE)
-                bufferedText.setStyle("-fx-fill: White");
+                bufferedText.setStyle("-fx-fill: " + Colors.DEFAULT_MSG_TEXT + ";");
             bufferedText.setText(buffer.toString());
             bufferedText.setFont(font);
             texts.add(bufferedText);
@@ -124,8 +145,8 @@ public class Message extends VBox {
         Text nickname = new Text(senderName + ": ");
         nickname.setFont(nameFont);
         nickname.setFill(nameColor);
-        DropShadow dropShadow = new DropShadow();
-        nickname.setEffect(dropShadow);
+        Glow glow = new Glow(0.4);
+        nickname.setEffect(glow);
 
         LinkedList<Text> allText = new LinkedList<>();
         allText.addFirst(nickname);

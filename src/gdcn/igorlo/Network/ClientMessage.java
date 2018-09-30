@@ -128,4 +128,10 @@ public class ClientMessage {
         return object.toJSONString();
     }
 
+    public static String commandSend(String text) {
+        JSONObject object = new JSONObject();
+        object.put("type", "command");
+        object.put("text", text);
+        return object.toJSONString();
+    }
 }

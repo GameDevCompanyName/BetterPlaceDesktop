@@ -3,18 +3,22 @@ package gdcn.igorlo.Interface;
 import gdcn.igorlo.Connector;
 import gdcn.igorlo.Constants.Booleans;
 import gdcn.igorlo.Constants.Colors;
+import gdcn.igorlo.Constants.INFO;
+import gdcn.igorlo.Constants.Times;
 import gdcn.igorlo.Utilities.Utils;
-import javafx.geometry.Insets;
+import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.Date;
 import java.util.Random;
 
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import static jdk.nashorn.internal.runtime.Version.version;
 
 public class Chat {
 
@@ -25,6 +29,7 @@ public class Chat {
     private ChillTextPane inputField;
     private CustomConsole console;
     private String userColor = Colors.DEFAULT_MSG_NAME;
+    private VBox GUI;
     private long startTimeSeconds;
 
     public Chat(Stage mainStage, Scene mainScene, Pane mainPane) {
@@ -48,6 +53,12 @@ public class Chat {
                 return;
             }
             switch (splited[0].toLowerCase()){
+                case "/help":
+                    help();
+                    break;
+                case "/server":
+                    sendServerCommand(text);
+                    break;
                 case "/connect":
                     connection(splited);
                     break;
@@ -90,6 +101,15 @@ public class Chat {
                 case "/random":
                     chatRandom(splited);
                     break;
+                case "/changecolor":
+                    changeColor(splited);
+                    break;
+                case "/version":
+                    chatVersion();
+                    break;
+                case "/about":
+                    about();
+                    break;
                 default:
                     unknownCommand();
             }
@@ -101,6 +121,116 @@ public class Chat {
         }
         inputField.clear();
 
+    }
+
+    private void about() {
+        systemMsg(INFO.ABOUT);
+    }
+
+    private void chatVersion() {
+        systemMsg("Текущая версия: " + INFO.VERSION);
+    }
+
+    private void help() {
+        systemMsg("Полный список команд:" +
+                "\n\n\t" + "/connect (IP) (PORT)" +
+                "\n\t" + "/help" +
+                "\n\t" + "/login [LOGIN] [PASS]" +
+                "\n\t" + "/echo [TEXT]" +
+                "\n\t" + "/name" +
+                "\n\t" + "/color" +
+                "\n\t" + "/time" +
+                "\n\t" + "/date" +
+                "\n\t" + "/joji" +
+                "\n\t" + "/suicide" +
+                "\n\t" + "/random (FROM) (TO)" +
+                "\n\t" + "/disconnect" +
+                "\n\t" + "/exit" +
+                "\n\t" + "/howlong" +
+                "\n\t" + "/yeah" +
+                "\n\t" + "/changecolor [ITEM] [#HEX]" +
+                "\n\t" + "/server [command to server]" +
+                "\n\t" + "/version" +
+                "\n\t" + "/about" +
+                "\n\n\t" + "() - опциональные параметры" +
+                "\n\t" + "[] - обязательные параметры"
+        );
+    }
+
+    private void setBackground(String colorHex){
+        FadeTransition fadeTransition = new FadeTransition(
+                Duration.seconds(Times.COLOR_CHANGE),
+                mainPane
+        );
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.0);
+        fadeTransition.setOnFinished(e -> {
+            mainPane.setStyle("-fx-background-color: " + colorHex + ";");
+            FadeTransition fadeInTransition = new FadeTransition(
+                    Duration.seconds(Times.COLOR_CHANGE),
+                    mainPane
+            );
+            fadeInTransition.setFromValue(0.0);
+            fadeInTransition.setToValue(1.0);
+            fadeInTransition.play();
+        });
+        fadeTransition.play();
+    }
+
+    private void sendServerCommand(String text) {
+        Connector.sendServerCommand(text);
+    }
+
+    private void changeColor(String[] splited) {
+        if (splited.length == 1){
+            systemMsg("Вы можете изменить цвет для:\n\t" +
+                    "background\n\t" +
+                    "msgtext\n\t" +
+                    "inputtext\n\t" +
+                    "systemname");
+        }
+        if (splited.length != 3){
+            unknownParameters();
+            return;
+        }
+        if (!splited[2].matches("#[0-9aAbBcCdDeEfF]{6}")){
+            error();
+            systemMsg("Второй аргумент команды должен иметь вид HEX\n\t#FFFFFF (например)");
+            return;
+        }
+        switch (splited[1]){
+            case "background":
+                setBackground(splited[2]);
+                break;
+            case "msgtext":
+                setMsgTextColor(splited[2]);
+                break;
+            case "systemname":
+                setSystemNameColor(splited[2]);
+                break;
+            case "inputtext":
+                setInpuTextColor(splited[2]);
+                break;
+            default:
+                systemMsg("Вы можете изменить цвет только для:\n\t" +
+                        "background\n\t" +
+                        "msgtext\n\t" +
+                        "inputtext\n\t" +
+                        "systemname");
+        }
+    }
+
+    private void setInpuTextColor(String colorHex) {
+        inputField.getTextArea().setStyle("-fx-background-color: rgba(60,60,70,0.25);" +
+                "-fx-text-fill: " + colorHex + ";");
+    }
+
+    private void setSystemNameColor(String colorHex) {
+        Colors.SYSTEM_MSG_NAME = colorHex;
+    }
+
+    private void setMsgTextColor(String colorHex) {
+        Colors.DEFAULT_MSG_TEXT = colorHex;
     }
 
     private void lose() {
@@ -243,11 +373,27 @@ public class Chat {
     }
 
     private void connection(String[] splited) {
-        if (splited.length != 1){
+        if (splited.length != 1 || splited.length != 3){
             systemMsg("Неизвестные параметры");
+            systemMsg("Используйте /connect для стандартного подключения");
+            systemMsg("Используйте /connect [IP] [PORT] для явного указания данных сервера");
             return;
         }
-        Connector.createConnectionIfNONE();
+        if (splited.length == 1){
+            Connector.createConnectionIfNONE();
+        }
+        if (splited.length == 3){
+            if (!splited[1].matches("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+")){
+                systemMsg("Некорректный IP");
+                return;
+            }
+            if (!splited[2].matches("[0-9]+")){
+                systemMsg("Некорректный порт");
+                return;
+            }
+            Integer port = Integer.parseInt(splited[2]);
+            Connector.createConnectionIfNONE(splited[1], port);
+        }
     }
 
     public void systemMsg(String text) {
@@ -260,13 +406,14 @@ public class Chat {
             mainPane.setStyle("-fx-border-color: red");
         }
 
+        setBackground(Colors.DEFAULT_BACKGROUND);
         CustomConsole console = new CustomConsole();
         this.console = console;
         ChillTextPane textPane = new ChillTextPane(mainPane, this);
         this.inputField = textPane;
 
-        VBox GUI = new VBox();
-        GUI.setBackground(new Background(new BackgroundFill(Color.web(Colors.DEFAULT_BACKGROUND), CornerRadii.EMPTY, Insets.EMPTY)));
+
+        GUI = new VBox();
         GUI.maxHeightProperty().bind(mainPane.heightProperty());
         GUI.maxWidthProperty().bind(mainPane.widthProperty());
         GUI.setAlignment(Pos.TOP_LEFT);
@@ -289,7 +436,7 @@ public class Chat {
     }
 
     public void serverMessage(String message) {
-        console.userTextAppend("Server", message, Colors.SERVER_MSG_NAME);
+        console.userTextAppend("Server", message, Colors.SYSTEM_MSG_NAME);
     }
 
 }
