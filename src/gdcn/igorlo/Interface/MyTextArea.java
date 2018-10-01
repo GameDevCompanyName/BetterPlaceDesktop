@@ -24,18 +24,18 @@ public class MyTextArea extends TextField {
         this.setMaxHeight(100);
         this.maxWidthProperty().bind(mainPane.widthProperty().subtract(3));
 
-        KeyCombination keyComb = new KeyCodeCombination(KeyCode.ENTER,
-                KeyCombination.CONTROL_DOWN);
-
         setEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if (keyComb.match(event)) {
-                appendText("\n");
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                chat.flushTextFromField();
                 event.consume();
-            } else {
-                if (event.getCode().equals(KeyCode.ENTER)) {
-                    chat.flushTextFromField();
-                    event.consume();
-                }
+            }
+            if (event.getCode().equals(KeyCode.UP)) {
+                chat.backToStory();
+                event.consume();
+            }
+            if (event.getCode().equals(KeyCode.DOWN)) {
+                chat.downToStory();
+                event.consume();
             }
         });
 

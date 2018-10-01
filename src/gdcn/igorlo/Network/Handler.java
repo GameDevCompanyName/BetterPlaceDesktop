@@ -38,9 +38,7 @@ public class Handler extends SimpleChannelHandler {
     @Override
     public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         super.channelClosed(ctx, e);
-        Platform.runLater(() -> {
-            Connector.connectionLost();
-        });
+        Platform.runLater(Connector::connectionLost);
     }
 
     @Override
@@ -64,6 +62,9 @@ public class Handler extends SimpleChannelHandler {
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         super.channelConnected(ctx, e);
-        Connector.connectionSuccess();
+        Platform.runLater(Connector::connectionSuccess);
     }
+
+
+
 }

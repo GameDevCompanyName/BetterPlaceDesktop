@@ -163,6 +163,7 @@ public class Connector {
     }
 
     public static void connectionSuccess() {
+        chat.systemMsg("Подключение установлено");
         connected = true;
     }
 

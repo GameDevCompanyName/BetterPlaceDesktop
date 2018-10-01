@@ -12,6 +12,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 public class CustomConsole extends StackPane {
 
@@ -21,13 +22,13 @@ public class CustomConsole extends StackPane {
     public CustomConsole(){
 
         textBox = new VBox();
+        TextFlow allText = new TextFlow();
         scrollPane = new ScrollPane();
 
         Message.setParentNode(textBox);
         Message.loadFonts();
-
-//        textBox.setPadding(new Insets(5));
-//        textBox.setSpacing(5);
+        Message.allText = allText;
+        textBox.getChildren().add(allText);
 
         if (Booleans.DEBUG)
             this.setStyle("-fx-border-color: red");

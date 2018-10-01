@@ -28,7 +28,7 @@ public class Message extends VBox {
     private static Font nameFont;
     private static String textColor;
 
-    private TextFlow msg = new TextFlow();
+    public static TextFlow allText;
 
     private String senderName;
     private String senderColor;
@@ -125,7 +125,7 @@ public class Message extends VBox {
                 bufferedText.setStyle("-fx-fill: " + Colors.DEFAULT_MSG_TEXT + ";");
             if (type == MessageType.SERVER_MESSAGE)
                 bufferedText.setStyle("-fx-fill: " + Colors.DEFAULT_MSG_TEXT + ";");
-            bufferedText.setText(buffer.toString());
+            bufferedText.setText(buffer.toString() + "\n");
             bufferedText.setFont(font);
             texts.add(bufferedText);
         }
@@ -134,28 +134,17 @@ public class Message extends VBox {
 
     }
 
-    public void addText(String text){
-
-        msg.getChildren().addAll(buildText(text));
-
-    }
-
     public void build(String text){
 
         Text nickname = new Text(senderName + ": ");
         nickname.setFont(nameFont);
         nickname.setFill(nameColor);
-        Glow glow = new Glow(0.4);
-        nickname.setEffect(glow);
 
-        LinkedList<Text> allText = new LinkedList<>();
-        allText.addFirst(nickname);
-        allText.addAll(buildText(text));
-        msg.getChildren().addAll(allText);
+        allText.getChildren().add(nickname);
+        allText.getChildren().addAll(buildText(text));
 
         this.prefWidthProperty().bind(parent.widthProperty());
         this.setMaxWidth(Control.USE_PREF_SIZE);
-        this.getChildren().add(msg);
 
     }
 

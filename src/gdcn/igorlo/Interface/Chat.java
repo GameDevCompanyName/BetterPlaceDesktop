@@ -14,8 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import static jdk.nashorn.internal.runtime.Version.version;
@@ -31,6 +30,9 @@ public class Chat {
     private String userColor = Colors.DEFAULT_MSG_NAME;
     private VBox GUI;
     private long startTimeSeconds;
+
+    private List<String> cmdHistory = new ArrayList<>();
+    private int historyPosition = 0;
 
     public Chat(Stage mainStage, Scene mainScene, Pane mainPane) {
         this.mainStage = mainStage;
@@ -49,7 +51,7 @@ public class Chat {
             String[] splited = text.split(" ");
             if (splited[0].matches("/[АПХапх]+") && splited[0].length() > 3){
                 lose();
-                inputField.clear();
+                clearAndRemember(text);
                 return;
             }
             switch (splited[0].toLowerCase()){
@@ -110,17 +112,69 @@ public class Chat {
                 case "/about":
                     about();
                     break;
+                case "/testdrive":
+                    testDrive(splited);
+                    break;
+                case "/clear":
+                    clear();
+                    break;
+                case "/fightofthecentury":
+                    fightOfTheCentury();
+                    break;
                 default:
                     unknownCommand();
             }
-            inputField.clear();
+            clearAndRemember(text);
             return;
         }
         if (Connector.loggedIn){
             Connector.sendMessage(text);
         }
-        inputField.clear();
+        clearAndRemember(text);
 
+    }
+
+    private void clearAndRemember(String text) {
+        cmdHistory.add(text);
+        inputField.clear();
+        historyPosition = cmdHistory.size();
+    }
+
+    private void fightOfTheCentury() {
+        systemMsg("Они встретились на пустыре в девяткино...");
+        systemMsg("\tБыла полночь...");
+        systemMsg("\t\tОни НАБРОСИЛИСЬ ДРУГ НА ДРУГА");
+        systemMsg("Кто же победит??");
+        systemMsg(".");
+        systemMsg(".");
+        systemMsg(".");
+        systemMsg("\tпобедил...");
+        if (randomTrueOrFalse()){
+            systemMsg("ПОБЕДИЛ ГААГ!");
+        } else {
+            systemMsg("ПОБЕДИЛ ВРРВ!");
+        }
+    }
+
+    private void clear() {
+        Message.allText.getChildren().clear();
+    }
+
+    private void testDrive(String[] splited) {
+        if (splited.length != 2) {
+            unknownParameters();
+            return;
+        }
+        if (!splited[1].matches("[0-9]+")){
+            error();
+            systemMsg("Неверный формат параметра");
+            return;
+        }
+        int quantity = Integer.parseInt(splited[1]);
+        Random random = new Random();
+        for (int i = 0; i < quantity; i++){
+            systemMsg(String.valueOf(random.nextLong()));
+        }
     }
 
     private void about() {
@@ -152,6 +206,9 @@ public class Chat {
                 "\n\t" + "/server [command to server]" +
                 "\n\t" + "/version" +
                 "\n\t" + "/about" +
+                "\n\t" + "/testdrive [N]" +
+                "\n\t" + "/clear" +
+                "\n\t" + "/fightofthecentury" +
                 "\n\n\t" + "() - опциональные параметры" +
                 "\n\t" + "[] - обязательные параметры"
         );
@@ -373,7 +430,7 @@ public class Chat {
     }
 
     private void connection(String[] splited) {
-        if (splited.length != 1 || splited.length != 3){
+        if (splited.length != 1 && splited.length != 3){
             systemMsg("Неизвестные параметры");
             systemMsg("Используйте /connect для стандартного подключения");
             systemMsg("Используйте /connect [IP] [PORT] для явного указания данных сервера");
@@ -381,6 +438,7 @@ public class Chat {
         }
         if (splited.length == 1){
             Connector.createConnectionIfNONE();
+            return;
         }
         if (splited.length == 3){
             if (!splited[1].matches("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+")){
@@ -439,4 +497,19 @@ public class Chat {
         console.userTextAppend("Server", message, Colors.SYSTEM_MSG_NAME);
     }
 
+    public void backToStory() {
+        if (historyPosition <= 0)
+            return;
+        String cmd = cmdHistory.get(--historyPosition);
+        inputField.getTextArea().setText(cmd);
+        inputField.getTextArea().positionCaret(cmd.length());
+    }
+
+    public void downToStory() {
+        if (historyPosition >= cmdHistory.size()-1)
+            return;
+        String cmd = cmdHistory.get(++historyPosition);
+        inputField.getTextArea().setText(cmd);
+        inputField.getTextArea().positionCaret(cmd.length());
+    }
 }
