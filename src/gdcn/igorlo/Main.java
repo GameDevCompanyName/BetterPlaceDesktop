@@ -13,6 +13,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Connector.application = this;
+
+        primaryStage.setOnCloseRequest(event -> {
+
+            Connector.dropAllTheConnection();
+
+        });
+
         StackPane mainPane = new StackPane();
         Scene mainScene = new Scene(mainPane, Color.web("#000000"));
         primaryStage.setScene(mainScene);
